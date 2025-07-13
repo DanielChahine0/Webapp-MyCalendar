@@ -33,34 +33,50 @@
             <div class="calendar-grid" id="calendar"></div>
         </div>
 
-        <!-- Model for Add/Edit/Delete Appointment -->
-        <div id="eventSelectorWrapper">
-            <label for="eventSelector">
-                <strong>Select an event:</strong>
-            </label>
-            <select id="eventSelector">
-                <option disabled selected>-- Select an event --</option>
-            </select>
-        </div>
+        <!-- Modal for Add/Edit/Delete Event -->
+         <div class="modal" id="eventModal">
+            <div class="model-content">
+                <div id="eventSelectorWrapper">
+                    <label for="eventSelector">
+                        <strong>Select an event:</strong>
+                    </label>
+                    <select id="eventSelector">
+                        <option disabled selected>-- Select an event --</option>
+                    </select>
+                </div>
 
-        <!-- Main Form -->
-        <form method="POST" id="eventForm">
-            <input type=hidden name="action" value="add" id="formAction" />
-            <input type="hidden" name="event_id" id="eventId" />
-            
-            <label for="eventName">Event Title:</label>
-            <input type="text" name="event_name" id="eventName" required />
+                <!-- Main Form -->
+                <form method="POST" id="eventForm">
+                    <input type=hidden name="action" value="add" id="formAction" />
+                    <input type="hidden" name="event_id" id="eventId" />
+                    
+                    <label for="eventName">Event Title:</label>
+                    <input type="text" name="event_name" id="eventName" required />
 
-            <label for="eventDescription">Description:</label>
-            <input type="text" name="event_description" id="eventDescription" required/>
+                    <label for="eventDescription">Description:</label>
+                    <input type="text" name="event_description" id="eventDescription" required/>
 
-            <label for="startDate">Start Date:</label>
-            <input type="date" name="start_date" id="startDate" required />
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" name="start_date" id="startDate" required />
 
-            <label for="endDate">End Date:</label>
-            <input type="date" name="end_date" id="endDate" required />
+                    <label for="endDate">End Date:</label>
+                    <input type="date" name="end_date" id="endDate" required />
 
-            <button type="submit">Add Event</button>
-        </form>
+                    <button type="submit">Add Event</button>
+                </form>
+
+                <!-- Delete Form -->
+                <form method="POST" onsubmit="return confirm('Are you sure you want to delete this event?');" id="deleteEventForm">
+                    <input type="hidden" name="action" value="delete" />
+                    <input type="hidden" name="event_id" id="deleteEventId" />
+                    <button type="submit" class="submit-btn">Delete Event</button>
+                </form>
+
+                <!-- Cancel -->
+                <button type="button" class="submit-btn">Cancel</button>
+            </div>
+         </div>
+        
+        <script src="js/calendar.js"></script>
     </body>
 </html>
