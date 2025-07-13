@@ -59,6 +59,8 @@
 
             <label for="endDate">End Date:</label>
             <input type="date" name="end_date" id="endDate" required />
+
+            <button type="submit">Add Event</button>
         </form>
     </body>
 </html>
