@@ -1,0 +1,27 @@
+:root{
+    /* Colors */
+    --primary: #4CAF50; /* Green */
+    --primary-light: #81C784; /* Light Green */
+    --primary-dark: #388E3C; /* Dark Green */
+    --background: #ffffff; /* White */
+    --success: #4CAF50; /* Green */
+    --success-text: #065F46; /* Dark Green */
+    --error: #F44336; /* Red */
+    --error-text: #B71C1C; /* Dark Red */
+    --secondary-color: #f1f1f1; /* Light Gray */
+    --text-color: #333; /* Dark Text */
+    --border-radius: 5px;
+    --font-family: Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background);
+    color: var(--text-color);
+}

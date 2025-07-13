@@ -7,6 +7,8 @@
 
         <meta name="description" content="A self-hosted Google Calendar-style web app built with PHP, MySQL, HTML, CSS, and JS." />
 
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
