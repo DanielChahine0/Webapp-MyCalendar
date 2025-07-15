@@ -1,111 +1,212 @@
-const calendarEl = document.getElementById('calendar');
-const monthYearEl = document.getElementById('month-year');
-const modalEl = document.getElementById('event-modal');
-
+const calendarEl = document.getElementById("calendar");
+const monthYearEl = document.getElementById("monthYear");
+const modalEl = document.getElementById("eventModal");
 let currentDate = new Date();
 
+// Generate Full Calendar View
 function renderCalendar(date = new Date()) {
-    calendarEl.innerHTML = '';
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const today = new Date();
+  calendarEl.innerHTML = "";
 
-    // Set the month and year in the header
-    const totalDays = new Date(year, month + 1, 0).getDate();
-    const firstDay = new Date(year, month, 1).getDay();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const today = new Date();
 
-    // display month and year
-    monthYearEl.textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric'});
-    
-    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    weekDays.forEach(day => {
-        // Create a header for each day of the week
-        const dayEl = document.createElement('div');
-        dayEl.className = 'day-name';
-        dayEl.textContent = day;
-        calendarEl.appendChild(dayEl);
+  const totalDays = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+  monthYearEl.textContent = date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  weekDays.forEach((day) => {
+    const dayEl = document.createElement("div");
+    dayEl.className = "day-name";
+    dayEl.textContent = day;
+    calendarEl.appendChild(dayEl);
+  });
+
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    calendarEl.appendChild(document.createElement("div"));
+  }
+
+  for (let day = 1; day <= totalDays; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    const cell = document.createElement("div");
+    cell.className = "day";
+
+    if (
+      day === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ) {
+      cell.classList.add("today");
+    }
+
+    const dateEl = document.createElement("div");
+    dateEl.className = "date-number";
+    dateEl.textContent = day;
+    cell.appendChild(dateEl);
+
+    const eventsToday = events.filter((e) => e.date === dateStr);
+    const eventBox = document.createElement("div");
+    eventBox.className = "events";
+
+    eventsToday.forEach((event) => {
+      const ev = document.createElement("div");
+      ev.className = "event";
+
+      const eventEl = document.createElement("div");
+      eventEl.className = "event-title";
+      eventEl.textContent = event.title.split(" - ")[0];
+
+      const descriptionEl = document.createElement("div");
+      descriptionEl.className = "description";
+      descriptionEl.textContent = event.title.split(" - ")[1];
+
+      const timeEl = document.createElement("div");
+      timeEl.className = "time";
+      timeEl.textContent = `${event.start_time} - ${event.end_time}`;
+
+      ev.appendChild(eventEl);
+      ev.appendChild(descriptionEl);
+      ev.appendChild(timeEl);
+      eventBox.appendChild(ev);
     });
 
-    // Create empty cells for the days before the first day of the month
-    for (let i = 0; i < firstDay; i++) {
-        calendarEl.appendChild(document.createElement('div'));
+    // ➕ ➖ Overlay Buttons
+    const overlay = document.createElement("div");
+    overlay.className = "day-overlay";
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "overlay-btn";
+    addBtn.textContent = "+ Add";
+    addBtn.onclick = (e) => {
+      e.stopPropagation();
+      openModalForAdd(dateStr);
+    };
+    overlay.appendChild(addBtn);
+
+    if (eventsToday.length > 0) {
+      const editBtn = document.createElement("button");
+      editBtn.className = "overlay-btn";
+      editBtn.textContent = "Edit";
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        openModalForEdit(eventsToday);
+      };
+      overlay.appendChild(editBtn);
     }
 
-    // Loop through the days of the month
-    for (let day = 1; day <= totalDays; day++) {
-        const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-        const cell = document.createElement('div');
-        cell.className = 'day';
-
-        if (day == today.getDate() && month == today.getMonth() && year == today.getFullYear()) {
-            cell.classList.add('today');
-        }
-
-        const dateEl = document.createElement('div');
-        dateEl.className = 'date-number';
-        dateEl.textContent = day;
-        cell.appendChild(dateEl);
-
-        const eventToday = events.filter(e => e.date === dateString);
-        const eventBox = document.createElement('div');
-        eventBox.className = 'events';
-
-        // Render events for the day
-        eventToday.forEach(event => {
-            const ev = document.createElement('div');
-            ev.className = 'event';
-            
-            const eventEl = document.createElement('div');
-            eventEl.className = 'event';
-            eventEl.textContent = event.title.split(' - ')[0]; // Show only the first word of the event title
-            
-            const descriptionEl = document.createElement('div');
-            descriptionEl.className = 'event-description';
-            descriptionEl.textContent = event.title.split(' - ')[1] // Show the rest of the title as description
-            
-            const timeEl = document.createElement('div');
-            timeEl.className = 'time';
-            timeEl.textContent = event.start_time + ' - ' + event.end_time;
-
-            ev.appendChild(eventEl);
-            ev.appendChild(descriptionEl);
-            ev.appendChild(timeEl);
-            eventBox.appendChild(ev);
-        });
-
-        // Overaly Buttons
-        const overlay = document.createElement('div');
-        overlay.className = 'day-overlay';
-
-        const addBtn = document.createElement('button');
-        addBtn.className = 'overlay-btn';
-        addBtn.textContent = '+ Add Event';
-
-        addBtn.onclick = e => {
-            e.stopPropagation();
-            openModalForAdd(dateString);
-        };
-
-        overlay.appendChild(addBtn);
-
-        if (eventToday.length > 0) {
-            const editBtn = document.createElement('button');
-            editBtn.className = 'overlay-btn';
-            editBtn.textContent = 'Edit Events';
-
-            editBtn.onclick = e => {
-                e.stopPropagation();
-                openModalForEdit(eventsToday);
-            };
-
-            overlay.appendChild(editBtn);
-        }
-
-        cell.appendChild(overlay);
-        cell.appendChild(eventBox);
-
-        calendarEl.appendChild(cell);
-    }
-
+    cell.appendChild(overlay);
+    cell.appendChild(eventBox);
+    calendarEl.appendChild(cell);
+  }
 }
+
+// ✅ Add Event Modal
+function openModalForAdd(dateStr) {
+  document.getElementById("formAction").value = "add";
+  document.getElementById("eventId").value = "";
+  document.getElementById("deleteEventId").value = "";
+  document.getElementById("eventName").value = "";
+  document.getElementById("eventDescription").value = "";
+  document.getElementById("startDate").value = dateStr;
+  document.getElementById("endDate").value = dateStr;
+  document.getElementById("startTime").value = "09:00";
+  document.getElementById("endTime").value = "10:00";
+
+  const selector = document.getElementById("eventSelector");
+  const wrapper = document.getElementById("eventSelectorWrapper");
+  if (selector && wrapper) {
+    selector.innerHTML = "";
+    wrapper.style.display = "none";
+  }
+
+  modalEl.style.display = "flex";
+}
+
+/*
+ * Open Modal for Editing Events
+ * @param {Array} eventsOnDate - Array of events on the selected date
+ * This function populates the modal with the events available for editing.
+ * It allows the user to select an event from a dropdown and autofills the form with
+ * the selected event's details.
+ * @returns {void}
+*/
+function openModalForEdit(eventsOnDate) {
+  document.getElementById("formAction").value = "edit";
+  modalEl.style.display = "flex";
+
+  const selector = document.getElementById("eventSelector");
+  const wrapper = document.getElementById("eventSelectorWrapper");
+
+  selector.innerHTML = "<option disabled selected>Choose event...</option>";
+
+  eventsOnDate.forEach((e) => {
+    const option = document.createElement("option");
+    option.value = JSON.stringify(e);
+    option.textContent = `${e.title} (${e.start} to ${e.end})`;
+    selector.appendChild(option);
+  });
+
+  if (eventsOnDate.length > 1) {
+    wrapper.style.display = "block";
+  } else {
+    wrapper.style.display = "none";
+  }
+
+  handleEventSelection(JSON.stringify(eventsOnDate[0]));
+}
+
+/*
+ * Handle Event Selection
+ * This function parses the JSON string of the selected event and populates the modal form fields with the event's details.
+ * It sets the event ID for deletion and fills in the event name, description, start date, end date, start time, and end time.
+ * @param {string} eventJSON - JSON string of the selected event
+ * @returns {void}
+ */
+function handleEventSelection(eventJSON) {
+  const event = JSON.parse(eventJSON);
+
+  document.getElementById("eventId").value = event.id;
+  document.getElementById("deleteEventId").value = event.id;
+
+  const [eventTitle, description] = event.title.split(" - ").map((e) => e.trim());
+
+  document.getElementById("eventName").value = eventTitle || "";
+  document.getElementById("eventDescription").value = description || "";
+  document.getElementById("startDate").value = event.start || "";
+  document.getElementById("endDate").value = event.end || "";
+  document.getElementById("startTime").value = event.start_time || "";
+  document.getElementById("endTime").value = event.end_time || "";
+}
+
+// Close the Modal
+function closeModal() {
+  modalEl.style.display = "none";
+}
+
+// Navigate Between Months
+function changeMonth(offset) {
+  currentDate.setMonth(currentDate.getMonth() + offset);
+  renderCalendar(currentDate);
+}
+
+// Update the Clock
+function updateClock() {
+  const now = new Date();
+  const clock = document.getElementById("clock");
+  clock.textContent = [
+    now.getHours().toString().padStart(2, "0"),
+    now.getMinutes().toString().padStart(2, "0"),
+    now.getSeconds().toString().padStart(2, "0"),
+  ].join(":");
+}
+
+
+renderCalendar(currentDate);
+updateClock();
+setInterval(updateClock, 1000);
