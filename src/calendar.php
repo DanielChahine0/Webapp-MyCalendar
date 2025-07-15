@@ -1,7 +1,7 @@
 <?php
 
 // Include the connection file to establish a database connection
-include 'src/connection.php';
+include 'connection.php';
 
 // variables
 $success = '';
@@ -126,7 +126,7 @@ if (isset($_GET['error'])) {
 }
 
 // Fetch events from the database and spread over the date range
-$result = $conn->query("SELECT * FROM events ORDER BY start_date ASC");
+$result = $connection->query("SELECT * FROM events ORDER BY start_date ASC");
 
 // Check if the query was successful and fetch results
 if ($result && $result->num_rows > 0) {
