@@ -60,11 +60,11 @@ function renderCalendar(date = new Date()) {
 
       const eventEl = document.createElement("div");
       eventEl.className = "event-title";
-      eventEl.textContent = event.title.split(" - ")[0];
+      eventEl.textContent = event.title;
 
       const descriptionEl = document.createElement("div");
       descriptionEl.className = "description";
-      descriptionEl.textContent = event.title.split(" - ")[1];
+      descriptionEl.textContent = event.description;
 
       const timeEl = document.createElement("div");
       timeEl.className = "time";
@@ -76,7 +76,7 @@ function renderCalendar(date = new Date()) {
       eventBox.appendChild(ev);
     });
 
-    // ➕ ➖ Overlay Buttons
+    // Overlay Buttons
     const overlay = document.createElement("div");
     overlay.className = "day-overlay";
 
@@ -106,11 +106,14 @@ function renderCalendar(date = new Date()) {
   }
 }
 
-// ✅ Add Event Modal
+// Add Event Modal
 function openModalForAdd(dateStr) {
   document.getElementById("formAction").value = "add";
   document.getElementById("eventId").value = "";
   document.getElementById("deleteEventId").value = "";
+  const deleteBtn = document.getElementById("deleteEventForm").querySelector("button[type='submit']");
+  deleteBtn.disabled = true;
+  deleteBtn.style.display = "none"; // Hide the button
   document.getElementById("eventName").value = "";
   document.getElementById("eventDescription").value = "";
   document.getElementById("startDate").value = dateStr;
@@ -148,9 +151,13 @@ function openModalForEdit(eventsOnDate) {
   eventsOnDate.forEach((e) => {
     const option = document.createElement("option");
     option.value = JSON.stringify(e);
-    option.textContent = `${e.title} (${e.start} to ${e.end})`;
+    option.textContent = `${e.title} - ${e.description} (${e.start} to ${e.end})`;
     selector.appendChild(option);
   });
+
+  selector.onchange = function() {
+    handleEventSelection(this.value);
+  };
 
   if (eventsOnDate.length > 1) {
     wrapper.style.display = "block";
@@ -159,6 +166,10 @@ function openModalForEdit(eventsOnDate) {
   }
 
   handleEventSelection(JSON.stringify(eventsOnDate[0]));
+
+  const deleteBtn = document.getElementById("deleteEventForm").querySelector("button[type='submit']");
+  deleteBtn.disabled = false;
+  deleteBtn.style.display = ""; // Show the button (default display)
 }
 
 /*
@@ -174,10 +185,8 @@ function handleEventSelection(eventJSON) {
   document.getElementById("eventId").value = event.id;
   document.getElementById("deleteEventId").value = event.id;
 
-  const [eventTitle, description] = event.title.split(" - ").map((e) => e.trim());
-
-  document.getElementById("eventName").value = eventTitle || "";
-  document.getElementById("eventDescription").value = description || "";
+  document.getElementById("eventName").value = event.title || "";
+  document.getElementById("eventDescription").value = event.description || "";
   document.getElementById("startDate").value = event.start || "";
   document.getElementById("endDate").value = event.end || "";
   document.getElementById("startTime").value = event.start_time || "";

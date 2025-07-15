@@ -139,7 +139,7 @@ if ($result && $result->num_rows > 0) {
             // Store each event with its details in the array
             $eventsFromDB[] = [
                 'id' => $row['id'],
-                'name' => $row['event_name'],
+                'title' => $row['event_name'],
                 'description' => $row['event_description'],
                 'date' => $start->format('Y-m-d'),
                 'start' => $row['start_date'],

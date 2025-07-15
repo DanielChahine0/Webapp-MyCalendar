@@ -22,6 +22,18 @@ include "calendar.php";
             <p>A self-hosted Google Calendar-style web app built with PHP, MySQL, HTML, CSS, and JS.</p>
         </header>
 
+        <!-- ✅ Success / Error Messages -->
+        <?php if ($success): ?>
+            <div class="alert success">
+                <?= $success ?>
+            </div>
+            
+        <?php elseif ($error): ?>
+            <div class="alert error">
+                <?= $error ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Clock -->
         <div class="clock-container">
             <div id="clock"></div>
@@ -31,9 +43,9 @@ include "calendar.php";
         <div class="calendar">
             <!-- Navigation bar for the calendar -->
             <div class="nav-btn-container">
-                <button class="nav-btn">⏮️</button>
+                <button onclick=changeMonth(-1) class="nav-btn">⏮️</button>
                 <h2 id="monthYear" style="margin: 0"></h2>
-                <button class="nav-btn">⏭️</button>
+                <button onclick=changeMonth(1) class="nav-btn">⏭️</button>
             </div>
 
             <div class="calendar-grid" id="calendar"></div>
@@ -85,7 +97,7 @@ include "calendar.php";
                 </form>
 
                 <!-- Cancel -->
-                <button type="button" class="submit-btn">Cancel</button>
+                <button type="button" onclick="closeModal()" class="submit-btn">Cancel</button>
             </div>
          </div>
         
