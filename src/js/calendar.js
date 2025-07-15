@@ -59,7 +59,7 @@ function renderCalendar(date = new Date()) {
       ev.className = "event";
 
       const eventEl = document.createElement("div");
-      eventEl.className = "event-title";
+      eventEl.className = "title"; // was "event-title"
       eventEl.textContent = event.title;
 
       const descriptionEl = document.createElement("div");
@@ -112,8 +112,11 @@ function openModalForAdd(dateStr) {
   document.getElementById("eventId").value = "";
   document.getElementById("deleteEventId").value = "";
   const deleteBtn = document.getElementById("deleteEventForm").querySelector("button[type='submit']");
-  deleteBtn.disabled = true;
-  deleteBtn.style.display = "none"; // Hide the button
+  if (deleteBtn) {
+    deleteBtn.disabled = true;
+    deleteBtn.style.display = "none";
+  }
+  document.getElementById("eventFormSubmitBtn").textContent = "Add Event";
   document.getElementById("eventName").value = "";
   document.getElementById("eventDescription").value = "";
   document.getElementById("startDate").value = dateStr;
@@ -142,13 +145,24 @@ function openModalForAdd(dateStr) {
 function openModalForEdit(eventsOnDate) {
   document.getElementById("formAction").value = "edit";
   modalEl.style.display = "flex";
+  document.getElementById("eventFormSubmitBtn").textContent = "Update Event";
 
   const selector = document.getElementById("eventSelector");
   const wrapper = document.getElementById("eventSelectorWrapper");
 
+  // Filter unique events by id
+  const uniqueEvents = [];
+  const seenIds = new Set();
+  eventsOnDate.forEach(e => {
+    if (!seenIds.has(e.id)) {
+      uniqueEvents.push(e);
+      seenIds.add(e.id);
+    }
+  });
+
   selector.innerHTML = "<option disabled selected>Choose event...</option>";
 
-  eventsOnDate.forEach((e) => {
+  uniqueEvents.forEach((e) => {
     const option = document.createElement("option");
     option.value = JSON.stringify(e);
     option.textContent = `${e.title} - ${e.description} (${e.start} to ${e.end})`;
@@ -159,13 +173,13 @@ function openModalForEdit(eventsOnDate) {
     handleEventSelection(this.value);
   };
 
-  if (eventsOnDate.length > 1) {
+  if (uniqueEvents.length > 1) {
     wrapper.style.display = "block";
   } else {
     wrapper.style.display = "none";
   }
 
-  handleEventSelection(JSON.stringify(eventsOnDate[0]));
+  handleEventSelection(JSON.stringify(uniqueEvents[0]));
 
   const deleteBtn = document.getElementById("deleteEventForm").querySelector("button[type='submit']");
   deleteBtn.disabled = false;

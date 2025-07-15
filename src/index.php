@@ -54,7 +54,7 @@ include "calendar.php";
         <!-- Modal for Add/Edit/Delete Event -->
          <div class="modal" id="eventModal">
             <div class="modal-content">
-                <div id="eventSelectorWrapper">
+                <div id="eventSelectorWrapper" style="display:none;">
                     <label for="eventSelector">
                         <strong>Select an event:</strong>
                     </label>
@@ -86,14 +86,14 @@ include "calendar.php";
                     <label for="endTime">End Time:</label>
                     <input type="time" name="end_time" id="endTime" required/>
 
-                    <button type="submit">Add Event</button>
+                    <button type="submit" id="eventFormSubmitBtn">Add Event</button>
                 </form>
 
                 <!-- Delete Form -->
                 <form method="POST" onsubmit="return confirm('Are you sure you want to delete this event?');" id="deleteEventForm">
                     <input type="hidden" name="action" value="delete" />
                     <input type="hidden" name="event_id" id="deleteEventId" />
-                    <button type="submit" class="submit-btn">Delete Event</button>
+                    <button type="submit" class="submit-btn" style="display:none;" disabled>Delete Event</button>
                 </form>
 
                 <!-- Cancel -->
