@@ -15,15 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
     $description = trim($_POST['event_description'] ?? '');
     $start = $_POST['start_date'] ?? '';
     $end = $_POST['end_date'] ?? '';
+    $startTime = $_POST['start_time'] ?? '';
+    $endTime = $_POST['end_time'] ?? '';
 
-    if ($event && $description && $start && $end) {
+    if ($event && $description && $start && $end && $startTime && $endTime) {
         // Prepare and execute the SQL statement to insert the event
         $stmt = $connection->prepare(
-            "INSERT INTO events (event_name, event_description, start_date, end_date) VALUES (?, ?, ?, ?)"
+            "INSERT INTO events (event_name, event_description, start_date, end_date, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)"
         );
         
         // Bind parameters to the SQL statement
-        $stmt->bind_param("ssss", $event, $description, $start, $end);
+        $stmt->bind_param("ssssss", $event, $description, $start, $end);
         
         $stmt->execute();
 
@@ -47,17 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
     $description = trim($_POST['event_description'] ?? '');
     $start = $_POST['start_date'] ?? '';
     $end = $_POST['end_date'] ?? '';
+    $startTime = $_POST['start_time'] ?? '';
+    $endTime = $_POST['end_time'] ?? '';
 
     // Check if all required fields are provided
-    if ($eventId && $event && $description && $start && $end) {
+    if ($eventId && $event && $description && $start && $end && $startTime && $endTime) {
         // Prepare and execute the SQL statement to update the event
         // MAYBE CHANGE CONNECTION TO CONN
         $stmt = $connection->prepare(
-            "UPDATE events SET event_name = ?, event_description = ?, start_date = ?, end_date = ? WHERE id = ?"
+            "UPDATE events SET event_name = ?, event_description = ?, start_date = ?, end_date = ?, start_time = ?, end_time = ? WHERE id = ?"
         );
         
         // Bind parameters to the SQL statement
-        $stmt->bind_param("ssssi", $event, $description, $start, $end, $eventId);
+        $stmt->bind_param("ssssssi", $event, $description, $start, $end, $startTime, $endTime, $eventId);
         
         $stmt->execute();
 
@@ -139,7 +143,9 @@ if ($result && $result->num_rows > 0) {
                 'description' => $row['event_description'],
                 'date' => $start->format('Y-m-d'),
                 'start' => $row['start_date'],
-                'end' => $row['end_date']
+                'end' => $row['end_date'],
+                'start_time' => $row['start_time'],
+                'end_time' => $row['end_time']
             ];
 
             // Move to the next day
