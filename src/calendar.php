@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
         );
         
         // Bind parameters to the SQL statement
-        $stmt->bind_param("ssssss", $event, $description, $start, $end);
+        $stmt->bind_param("ssssss", $event, $description, $start, $end, $startTime, $endTime);
         
         $stmt->execute();
 

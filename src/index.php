@@ -32,7 +32,7 @@ include "calendar.php";
             <!-- Navigation bar for the calendar -->
             <div class="nav-btn-container">
                 <button class="nav-btn">⏮️</button>
-                <h2 id="month-year" style="margin: 0"></h2>
+                <h2 id="monthYear" style="margin: 0"></h2>
                 <button class="nav-btn">⏭️</button>
             </div>
 
@@ -41,7 +41,7 @@ include "calendar.php";
 
         <!-- Modal for Add/Edit/Delete Event -->
          <div class="modal" id="eventModal">
-            <div class="model-content">
+            <div class="modal-content">
                 <div id="eventSelectorWrapper">
                     <label for="eventSelector">
                         <strong>Select an event:</strong>
@@ -88,6 +88,10 @@ include "calendar.php";
                 <button type="button" class="submit-btn">Cancel</button>
             </div>
          </div>
+        
+        <script>
+            const events = <?= json_encode($eventsFromDB, JSON_UNESCAPED_UNICODE); ?>;
+        </script>
         
         <script src="js/calendar.js"></script>
     </body>
